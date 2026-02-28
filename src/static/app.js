@@ -7,7 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Function to fetch activities from API
   async function fetchActivities() {
     try {
-      const response = await fetch("/activities");
+      // ensure we always get the latest data (avoid browser caching)
+    const response = await fetch("/activities", { cache: "no-store" });
       const activities = await response.json();
 
       // Clear loading message and reset select options
@@ -48,6 +49,29 @@ document.addEventListener("DOMContentLoaded", () => {
             const li = document.createElement("li");
             li.className = "participant-item";
             li.textContent = p;
+
+            // delete icon
+            const removeBtn = document.createElement("span");
+            removeBtn.className = "remove-participant";
+            removeBtn.textContent = "×";
+            removeBtn.title = "Unregister";
+            removeBtn.addEventListener("click", async () => {
+              try {
+                const res = await fetch(
+                  `/activities/${encodeURIComponent(name)}/participants?email=${encodeURIComponent(p)}`,
+                  { method: "DELETE", cache: "no-store" }
+                );
+                if (res.ok) {
+                  fetchActivities();
+                } else {
+                  const err = await res.json();
+                  alert(err.detail || "Failed to remove participant");
+                }
+              } catch (err) {
+                console.error("Error removing participant", err);
+              }
+            });
+            li.appendChild(removeBtn);
             ul.appendChild(li);
           });
           participantsDiv.appendChild(ul);

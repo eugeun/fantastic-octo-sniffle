@@ -156,14 +156,24 @@ footer {
 }
 
 .participants-list {
-  list-style: disc;
-  margin-left: 20px;
+  list-style: none;
+  margin-left: 0;
+  padding-left: 0;
 }
 
 .participant-item {
+  display: flex;
+  align-items: center;
   padding: 4px 0;
   color: #333;
   font-size: 14px;
+}
+
+.participant-item .remove-participant {
+  margin-left: 8px;
+  cursor: pointer;
+  color: #c62828;
+  font-weight: bold;
 }
 
 .no-participants {
